@@ -1,0 +1,74 @@
+<!-- 可取消的 Promise -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #result {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      height: 100px;
+      border: 1px solid #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 显示请求结果 -->
+  <h3>请求结果</h3>
+  <p id="result">no result</p>
+
+  <!-- 三个按钮：请求按钮、取消请求的按钮、复位按钮 -->
+  <button id="req1">req 1</button>
+  <button id="cancel">cancel</button>
+  <button id="reset">reset</button>
+
+  <script>
+    // 暴露取消 Promise 的接口
+    let cancelReq = null
+    // 暴露 request 接口
+    function request(reqArgs) {
+      return new Promise((resolve, reject) => {
+        // 通过延时代码来模拟异步 http 请求
+        setTimeout(() => {
+          resolve('result message')
+        }, 2000);
+
+        // 给用户提供一个取消请求的函数
+        cancelReq = function () {
+          resolve('请求被取消了')
+          cancelReq = null
+        }
+      })
+    }
+  </script>
+
+  <script>
+    // 三个按钮
+    const req1 = document.querySelector('#req1')
+    const cancel = document.querySelector('#cancel')
+    const reset = document.querySelector('#reset')
+    // 结果显示区
+    const result = document.querySelector('#result')
+
+    // 给三个按钮添加 click 事件
+    req1.addEventListener('click', async function () {
+      const ret = await request('/req')
+      result.textContent = ret
+    })
+    cancel.addEventListener('click', function () {
+      cancelReq()
+    })
+    reset.addEventListener('click', function() {
+      result.textContent = 'no result'
+    })
+  </script>
+</body>
+
+</html>

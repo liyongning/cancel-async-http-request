@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      height: 100px;
+      border: 1px solid #eee;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 内容显示区 -->
+  <h3>内容区</h3>
+  <p id="content">no content</p>
+
+  <!-- 通过三个按钮来模拟三个 Tab 标签 -->
+  <button id="tab1">Tab 1</button>
+  <button id="tab2">Tab 2</button>
+  <button id="tab3">Tab 3</button>
+
+  <button id="reset">reset</button>
+
+  <!-- axios -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- 基于 axios 封装的 request 接口 -->
+  <script src="./axiosRequest.js"></script>
+  <!-- 基于 fetch 封装的 request 接口 -->
+  <!-- <script src="./fetchRequest.js"></script> -->
+  <!-- 基于 XMLHttpRequest 封装的 request 接口 -->
+  <!-- <script src="./xhrRequest.js"></script> -->
+
+  <script>
+    // 分别给三个按钮添加点击事件，当发生点击时执行相应的回调函数请求对应的接口，请求成功后将结果显示到内容区
+    const tab1 = document.querySelector('#tab1')
+    const tab2 = document.querySelector('#tab2')
+    const tab3 = document.querySelector('#tab3')
+
+    // 内容显示区
+    const content = document.querySelector('#content')
+
+    // reset
+    const reset = document.querySelector('#reset')
+
+    tab1.addEventListener('click', async function () {
+      const { data } = await request({ url: '/tab1' })
+      content.textContent = data
+    })
+
+    tab2.addEventListener('click', async function () {
+      const { data } = await request({ url: '/tab2' }, true)
+      content.textContent = data
+    })
+
+    tab3.addEventListener('click', async function () {
+      // 取消上一个请求
+      cancelFn('Tab 2 的接口请求被取消了')
+
+      const { data } = await request({ url: '/tab3' })
+      content.textContent = data
+    })
+
+    reset.addEventListener('click', function () {
+      content.textContent = 'no content'
+    })
+
+  </script>
+</body>
+
+</html>
